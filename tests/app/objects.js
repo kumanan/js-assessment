@@ -27,6 +27,9 @@ define([ 'use!underscore' ], function(_) {
 
     it("you should be able to alter the context in which a method runs", function() {
       // define a function for fn so that the following will pass
+      fn = function() {
+        return a.sayIt.call(b);
+      }
       expect(fn()).to.be('Yo, Rebecca!');
     });
 
@@ -35,7 +38,9 @@ define([ 'use!underscore' ], function(_) {
       var obj1 = new C('Rebecca'),
           obj2 = new C('Melissa'),
           greeting = "What's up";
-
+      fn = function(greeting) {
+        C.prototype.greeting = greeting;
+      }
       fn(greeting);
 
       expect(obj1.greeting).to.be(greeting);
@@ -53,6 +58,16 @@ define([ 'use!underscore' ], function(_) {
       C.prototype.bop = 'bip';
 
       var obj = new C();
+
+      fn = function(obj) {
+        var ownProperties = [];
+        for(var prop in obj) {
+          if(obj.hasOwnProperty(prop)) {
+            ownProperties.push(prop + ": " + obj[prop]);
+          }
+        }
+        return ownProperties;
+      }
 
       expect(fn(obj)).to.eql([ 'foo: bar', 'baz: bim' ]);
     });
